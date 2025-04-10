@@ -1,0 +1,61 @@
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+using System.Windows.Forms;
+
+namespace Zegar
+{
+    public partial class Form1: Form
+    {
+        Timer timer = new Timer();
+        public Form1()
+        {
+            InitializeComponent();
+            DateTime dt = DateTime.Now;
+            timer.Interval = 1000;
+            timer.Tick += Timer_Tick;
+            timer.Start();
+        }
+        private void Timer_Tick(object sender, EventArgs e)
+        {
+            pictureBox1.Invalidate(); 
+        }
+        private void Form1_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        private void pictureBox1_Paint(object sender, PaintEventArgs e)
+        {
+            DateTime dt = DateTime.Now;
+
+            
+            e.Graphics.DrawEllipse(Pens.Black, 20, 20, 260, 260);
+
+            double wskazowkaS = (dt.Second / 60.0) * 360;
+            double wskazowkaM = (dt.Minute / 60.0) * 360 + (dt.Second / 60.0) * 6;
+            double wskazowkaH = ((dt.Hour % 12) / 12.0) * 360 + (dt.Minute / 60.0) * 30;
+
+            double kat_s = wskazowkaS * Math.PI / 180;
+            double kat_m = wskazowkaM * Math.PI / 180;
+            double kat_h   = wskazowkaH * Math.PI / 180;
+
+            int sekunda_x = 150 + (int)(100 * Math.Sin(kat_s));
+            int sekunda_y = 150 - (int)(100 * Math.Cos(kat_s));
+            int minuta_x = 150 + (int)(90 * Math.Sin(kat_m));
+            int minuta_y = 150 - (int)(90 * Math.Cos(kat_m));
+            int godzina_x   = 150 + (int)(60 * Math.Sin(kat_h));
+            int godzina_y = 150 - (int)(60 * Math.Cos(kat_h));
+
+            e.Graphics.DrawLine(new Pen(Color.Red, 2), 150, 150, sekunda_x, sekunda_y);
+            e.Graphics.DrawLine(new Pen(Color.Blue, 4), 150, 150, minuta_x, minuta_y);
+            e.Graphics.DrawLine(new Pen(Color.Black, 6), 150, 150, godzina_x, godzina_y);
+        }
+    }
+}
